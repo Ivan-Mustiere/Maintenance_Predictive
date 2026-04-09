@@ -1,0 +1,47 @@
+stages:
+  load:
+    cmd: python src/data/load_data.py
+    deps:
+      - src/data/load_data.py
+      - data/raw/PS2.txt
+      - data/raw/FS1.txt
+      - data/raw/profile.txt
+
+  preprocess:
+    cmd: python src/data/preprocess.py
+    deps:
+      - src/data/preprocess.py
+      - src/data/load_data.py
+      - data/raw/PS2.txt
+      - data/raw/FS1.txt
+      - data/raw/profile.txt
+    outs:
+      - data/processed/X_train.csv
+      - data/processed/X_test.csv
+      - data/processed/y_train.csv
+      - data/processed/y_test.csv
+      - data/processed/features_all.csv
+      - data/processed/target_all.csv
+
+  train:
+    cmd: python src/models/train.py
+    deps:
+      - src/models/train.py
+      - data/processed/X_train.csv
+      - data/processed/y_train.csv
+    outs:
+      - models/model_v1.pkl
+      - models/train_metrics.json
+
+  evaluate:
+    cmd: python src/models/evaluate.py
+    deps:
+      - src/models/evaluate.py
+      - models/model_v1.pkl
+      - data/processed/X_test.csv
+      - data/processed/y_test.csv
+    outs:
+      - models/eval_metrics.json
+    metrics:
+      - models/eval_metrics.json:
+          cache: false

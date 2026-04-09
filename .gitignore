@@ -1,0 +1,43 @@
+# Données brutes (versionnées via DVC)
+data/raw/
+data/processed/
+models/
+
+# DVC
+.dvc/cache/
+.dvc/tmp/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# Environnements virtuels
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Variables d'environnement
+.env
+.env.*
