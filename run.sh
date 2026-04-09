@@ -17,6 +17,7 @@ usage() {
     echo "  mlflow       Lancer l'interface MLflow (port 5000)"
     echo "  test         Lancer les tests pytest"
     echo "  docker       Lancer via docker-compose"
+    echo "  stop         Arreter les services (API, MLflow, Docker)"
     echo "  all          install + pipeline + test"
     echo ""
 }
@@ -67,6 +68,15 @@ cmd_docker() {
     docker compose up --build
 }
 
+cmd_stop() {
+    echo ">>> Arret des services..."
+    pkill -f "uvicorn api.app:app" 2>/dev/null && echo "API FastAPI arretee." || echo "API FastAPI non trouvee."
+    pkill -f "mlflow ui" 2>/dev/null && echo "MLflow arrete." || echo "MLflow non trouve."
+    if [ -f docker-compose.yml ]; then
+        docker compose down && echo "Docker Compose arrete."
+    fi
+}
+
 cmd_all() {
     cmd_install
     cmd_pipeline
@@ -83,6 +93,7 @@ case "${1:-}" in
     mlflow)     cmd_mlflow ;;
     test)       cmd_test ;;
     docker)     cmd_docker ;;
+    stop)       cmd_stop ;;
     all)        cmd_all ;;
     *)          usage ;;
 esac
