@@ -25,6 +25,14 @@ env/
 .ipynb_checkpoints/
 *.ipynb_checkpoints
 
+# MLflow
+mlruns/
+mlartifacts/
+
+# Claude Code
+.claude/
+CLAUDE.md
+
 # IDE
 .vscode/
 .idea/

@@ -67,9 +67,10 @@ def build_features(
 
 
 def build_target(profile: pd.DataFrame) -> pd.Series:
-    """Build binary target from valve condition (column index 3).
+    """Build binary target from valve condition (column index 1).
 
     Valve condition 100 → 1 (optimal), anything else → 0 (non-optimal).
+    Column mapping (0-indexed): 0=cooler, 1=valve, 2=pump, 3=accumulator, 4=stable_flag.
 
     Args:
         profile: Raw profile DataFrame.
@@ -77,7 +78,7 @@ def build_target(profile: pd.DataFrame) -> pd.Series:
     Returns:
         Binary target Series.
     """
-    valve = profile.iloc[:, 3]
+    valve = profile.iloc[:, 1]
     target = (valve == 100).astype(int)
     logger.info(f"Target distribution:\n{target.value_counts().to_string()}")
     return target

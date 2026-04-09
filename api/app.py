@@ -2,6 +2,7 @@
 
 import json
 import time
+from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Query
@@ -17,10 +18,23 @@ MODELS_DIR = Path("models")
 TRAIN_METRICS_PATH = MODELS_DIR / "train_metrics.json"
 EVAL_METRICS_PATH = MODELS_DIR / "eval_metrics.json"
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Pre-load model and features at startup to avoid cold-start latency."""
+    logger.info("Starting up: pre-loading model and feature data...")
+    from src.models.predict import _load_model, _load_features
+    _load_model()
+    _load_features()
+    logger.info("Startup complete.")
+    yield
+
+
 app = FastAPI(
     title="Valve Condition Predictor",
     description="Predictive maintenance API for hydraulic system valve condition",
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 Instrumentator().instrument(app).expose(app)
@@ -46,16 +60,6 @@ class ModelInfoResponse(BaseModel):
 
 
 _start_time = time.time()
-
-
-@app.on_event("startup")
-async def startup_event() -> None:
-    """Pre-load model and features at startup to avoid cold-start latency."""
-    logger.info("Starting up: pre-loading model and feature data...")
-    from src.models.predict import _load_model, _load_features
-    _load_model()
-    _load_features()
-    logger.info("Startup complete.")
 
 
 @app.get("/health", response_model=HealthResponse)

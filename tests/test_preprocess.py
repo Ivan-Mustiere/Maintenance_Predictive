@@ -28,8 +28,8 @@ def sample_fs1() -> pd.DataFrame:
 @pytest.fixture
 def sample_profile() -> pd.DataFrame:
     np.random.seed(42)
-    data = np.random.rand(2200, 6)
-    data[:, 3] = np.random.choice([100, 90, 80, 73], size=2200)
+    data = np.random.rand(2200, 5)
+    data[:, 1] = np.random.choice([100, 90, 80, 73], size=2200)
     return pd.DataFrame(data)
 
 
@@ -68,7 +68,7 @@ def test_build_target_binary(sample_profile):
 def test_build_target_mapping(sample_profile):
     """Valve condition 100 must map to 1, others to 0."""
     target = build_target(sample_profile)
-    valve = sample_profile.iloc[:, 3]
+    valve = sample_profile.iloc[:, 1]
     for i in range(len(target)):
         if valve.iloc[i] == 100:
             assert target.iloc[i] == 1
